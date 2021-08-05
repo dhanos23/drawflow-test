@@ -5,22 +5,21 @@
 </template>
 
 <script>
-import * as Vue from 'vue'
+import * as Vue from "vue";
 /*eslint-disable */
 
-import Drawflow from 'drawflow'
-import styleDrawflow from 'drawflow/dist/drawflow.min.css' // eslint-disable-line no-use-before-define
-import NodeClickVue from './components/NodeClick.vue'
-import UbicacionUsuario from './components/UbicacionUsuario.vue'
+import Drawflow from "drawflow";
+import styleDrawflow from "drawflow/dist/drawflow.min.css"; // eslint-disable-line no-use-before-define
+import NodeClickVue from "./components/NodeClick.vue";
+import UbicacionUsuario from "./components/UbicacionUsuario.vue";
 /*eslint-enable */
 
-
 export default {
-  name: 'App',
+  name: "App",
   data() {
     return {
       editor: null,
-    }
+    };
   },
   mounted() {
     const id = document.getElementById("drawflow");
@@ -28,15 +27,38 @@ export default {
     this.editor.start();
     const props = {};
     const options = {};
-    this.editor.registerNode('NodeClick', NodeClickVue, props, options);
-    this.editor.registerNode('UbicacionUsuario', UbicacionUsuario, props, options);
+    this.editor.registerNode("NodeClick", NodeClickVue, props, options);
+    this.editor.registerNode(
+      "UbicacionUsuario",
+      UbicacionUsuario,
+      props,
+      options
+    );
     const data = {};
-    this.editor.addNode('Name', 0, 1, 150, 300, 'welcome', data, 'NodeClick', 'vue');
-    this.editor.addNode('Name2', 0, 1, 150, 300, 'ubicacion', data, 'UbicacionUsuario', 'vue');
-    
-
+    this.editor.addNode(
+      "Name",
+      0,
+      1,
+      150,
+      300,
+      "welcome",
+      data,
+      "NodeClick",
+      "vue"
+    );
+    this.editor.addNode(
+      "Name2",
+      3,
+      0,
+      750,
+      300,
+      "ubicacion",
+      data,
+      "UbicacionUsuario",
+      "vue"
+    );
   },
-}
+};
 </script>
 
 <style>
@@ -58,10 +80,13 @@ html {
   text-align: initial;
 }
 #drawflow {
-  text-align:initial;
+  text-align: initial;
   position: relative;
   width: 100%;
   height: 800px;
   border: 1px solid red;
+}
+.input {
+  background: white !important;
 }
 </style>
