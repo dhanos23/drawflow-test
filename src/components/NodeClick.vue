@@ -35,7 +35,7 @@ export default {
   background-color: #edf1f5;
 }
 .drawflow-node.welcome {
-    width: 318px;
+    width: 320px;
 }
 .drawflow .drawflow-node {
   background-color: white;
