@@ -8,11 +8,46 @@ export const orderNode = (connection, editor) => {
   let outputColumn = getNodeColumn(output_id, editor); 
   let inputColumn = getNodeColumn(input_id, editor); 
   
-  if (outputColumn > inputColumn ) {
+  if (outputColumn > inputColumn || editor.getNodeFromId(input_id).inputs[input_class].connections.length > 1) {
     editor.removeSingleConnection(output_id, input_id, output_class, input_class); 
     alert('Forbidden connection deleted');
     return;
   }
+
+  // coloreamos
+  let color = randomColor();
+
+  let collection = document.getElementById(`node-${output_id}`).children;
+  for (let i = 0; i < collection.length; i++) {
+    if(collection[i].className == 'outputs'){
+
+      for(let j = 0; j < collection[i].children.length; j++){
+        if(!collection[i].children[j].className.includes(output_class))
+          continue;
+
+        color = 
+          collection[i].children[j].style.backgroundColor != '' ?
+          collection[i].children[j].style.backgroundColor :
+          color;
+        
+        collection[i].children[j].style.backgroundColor = color;
+      }
+    }
+  } 
+
+  collection = document.getElementById(`node-${input_id}`).children;
+  for (let i = 0; i < collection.length; i++) {
+    if(collection[i].className == 'inputs'){
+      for(let j = 0; j < collection[i].children.length; j++){        
+        if(!collection[i].children[j].className.includes(input_class))
+          continue;
+        console.log(collection[i].children);
+
+        collection[i].children[j].style.backgroundColor = color;
+      }
+    }
+  }
+  // termina el coloreo
 
   if (outputColumn != inputColumn )
     return;
@@ -128,3 +163,38 @@ export const sortPosition = (id, editor) => {
       pos_y: editor.drawflow.drawflow.Home.data[id].pos_y
     };
   }
+
+export const randomColor = () => {
+  return '#' + Math.floor(Math.random()*16777215).toString(16);
+}
+
+export const colorConnectionRemoved = (connection, editor) => {
+
+  var { output_id, input_id, output_class, input_class} = connection;
+  
+  let collection = document.getElementById(`node-${output_id}`).children;
+  for (let i = 0; i < collection.length; i++) {
+    if(collection[i].className == 'outputs'){
+
+      for(let j = 0; j < collection[i].children.length; j++){
+        if(!collection[i].children[j].className.includes(output_class))
+          continue;
+        if(editor.getNodeFromId(output_id).outputs[output_class].connections.length == 0)
+          collection[i].children[j].style.backgroundColor = '';
+      }
+    }
+  } 
+
+  collection = document.getElementById(`node-${input_id}`).children;
+  for (let i = 0; i < collection.length; i++) {
+    if(collection[i].className == 'inputs'){
+      for(let j = 0; j < collection[i].children.length; j++){
+        if(!collection[i].children[j].className.includes(input_class))
+          continue;
+        if(editor.getNodeFromId(output_id).outputs[output_class].connections.length == 0)
+          collection[i].children[j].style.backgroundColor = '';
+      }
+    }
+  }
+}
+

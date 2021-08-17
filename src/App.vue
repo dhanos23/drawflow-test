@@ -12,7 +12,7 @@ import Drawflow from "drawflow";
 import styleDrawflow from "drawflow/dist/drawflow.min.css"; // eslint-disable-line no-use-before-define
 import NodeClickVue from "./components/NodeClick.vue";
 import UbicacionUsuario from "./components/UbicacionUsuario.vue";
-import { sortPosition, orderNode } from "./helpers/functions";
+import { sortPosition, orderNode, colorConnectionRemoved } from "./helpers/functions";
 /*eslint-enable */
 
 export default {
@@ -46,6 +46,10 @@ export default {
 
     this.editor.on("connectionCreated", (connection) => {
       orderNode(connection, this.editor);
+    });
+
+    this.editor.on("connectionRemoved", (connection) => {
+      colorConnectionRemoved(connection, this.editor);
     });
 
     this.editor.registerNode("NodeClick", NodeClickVue, props, options);
