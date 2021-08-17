@@ -11,8 +11,8 @@ export const orderNode = (connection, editor) => {
   let inputColumn = inputNode.pos_x / size;
 
   if (outputColumn > inputColumn ) {
-    console.log('Forbidden connection deleted');
     editor.removeSingleConnection(outputId, inputId, connection.output_class, connection.input_class); 
+    alert('Forbidden connection deleted');
     return;
   }
 
@@ -22,7 +22,7 @@ export const orderNode = (connection, editor) => {
   let inputNodeWithoutConnections   = true;
   let inputOutputs = Object.values(inputNode.outputs);
 
-  // Find if node 2 has connections
+  // Find if input node has connections in its outputs
   inputOutputs.forEach(output => {
     let connections = Object.values(output.connections);
     if (connections.length > 0){
@@ -39,11 +39,6 @@ export const orderNode = (connection, editor) => {
 
     sortPosition(inputId, editor);
   }
-
-  //TODO
-    //node2 con outputs
-    // col node1  < col node 1
-
 }
 
 export const sortPosition = (id, editor) => {
