@@ -4,14 +4,12 @@ export const orderNode = (connection, editor) => {
 
 // {output_id: "1", input_id: "2", output_class: "output_1", input_class: "input_1"}
 
-  let outputId = connection.output_id;
-  let inputId = connection.input_id;
-  let outputColumn = editor.drawflow.drawflow.Home.data[outputId].pos_x / size;
-  let inputNode =  editor.drawflow.drawflow.Home.data[inputId];
-  let inputColumn = inputNode.pos_x / size;
-
+  var {output_id, input_id, output_class, input_class} = connection;
+  let outputColumn = getNodeColumn(output_id, editor); 
+  let inputColumn = getNodeColumn(input_id, editor); 
+  
   if (outputColumn > inputColumn ) {
-    editor.removeSingleConnection(outputId, inputId, connection.output_class, connection.input_class); 
+    editor.removeSingleConnection(output_id, input_id, output_class, input_class); 
     alert('Forbidden connection deleted');
     return;
   }
@@ -20,7 +18,7 @@ export const orderNode = (connection, editor) => {
     return;
 
   let inputNodeWithoutConnections   = true;
-  let inputOutputs = Object.values(inputNode.outputs);
+  let inputOutputs = Object.values(editor.drawflow.drawflow.Home.data[input_id].outputs);
 
   // Find if input node has connections in its outputs
   inputOutputs.forEach(output => {
@@ -33,12 +31,25 @@ export const orderNode = (connection, editor) => {
   if(inputNodeWithoutConnections ) {
     console.log('Mover nodo');
     let x = (inputColumn+1) * size;
-    editor.drawflow.drawflow.Home.data[inputId].pos_x = x;
-    let width = document.getElementById(`node-${inputId}`).offsetWidth;
-    document.getElementById(`node-${inputId}`).style.left = `${x + ((size - width) / 2)}px`; 
-
-    sortPosition(inputId, editor);
+    moveNode(input_id, editor, x);
+    sortPosition(input_id, editor);
   }
+}
+
+export const getNodeColumn = (id, editor) => {
+  return editor.drawflow.drawflow.Home.data[id].pos_x / size;
+}
+
+export const moveNode = (id, editor, x=null, y=null) => {
+  if(x) {
+    editor.drawflow.drawflow.Home.data[id].pos_x = x;
+    document.getElementById(`node-${id}`).style.left = `${x}px`; 
+  }
+  if(y){
+    editor.drawflow.drawflow.Home.data[id].pos_y = y;
+    document.getElementById(`node-${id}`).style.top = `${y}px`; 
+  }
+  editor.updateConnectionNodes(`node-${id}`);
 }
 
 export const sortPosition = (id, editor) => {
@@ -48,7 +59,6 @@ export const sortPosition = (id, editor) => {
     editor.drawflow.drawflow.Home.data[id].pos_x += x;
     const pos_x = editor.drawflow.drawflow.Home.data[id].pos_x;
     const width = document.getElementById(`node-${id}`).offsetWidth;
-    console.log()
     document.getElementById(`node-${id}`).style.left = `${pos_x + ((size - width) / 2)}px`;
   
     const data = editor.drawflow.drawflow.Home.data;
