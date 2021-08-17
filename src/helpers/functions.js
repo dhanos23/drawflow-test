@@ -29,7 +29,7 @@ export const orderNode = (connection, editor) => {
   })
 
   if(inputNodeWithoutConnections ) {
-    console.log('Mover nodo');
+    console.log('Node moved');
     let x = (inputColumn+1) * size;
     moveNode(input_id, editor, x);
     sortPosition(input_id, editor);
@@ -37,7 +37,7 @@ export const orderNode = (connection, editor) => {
 }
 
 export const getNodeColumn = (id, editor) => {
-  return editor.drawflow.drawflow.Home.data[id].pos_x / size;
+  return parseInt(editor.drawflow.drawflow.Home.data[id].pos_x / size);
 }
 
 export const moveNode = (id, editor, x=null, y=null) => {
@@ -52,14 +52,37 @@ export const moveNode = (id, editor, x=null, y=null) => {
   editor.updateConnectionNodes(`node-${id}`);
 }
 
+export const returnNodeToLastPosition = (id, editor) => {
+  let { last_position } = editor.drawflow.drawflow.Home.data[id].data;
+  moveNode(id, editor, last_position.pos_x, last_position.pos_y);
+}
+
+export const validateNodeNewPosition = (id, editor) => {
+  let inputs = editor.getNodeFromId(id).inputs;
+  for(let key of Object.keys(inputs)){
+      for(let connection of inputs[key].connections){
+          if(getNodeColumn(connection.node, editor) >= getNodeColumn(id, editor)) {
+            alert('Forbidden order');
+            return false;
+          }
+      }
+  }
+  return true;
+}
+
 export const sortPosition = (id, editor) => {
+
+  if (!validateNodeNewPosition(id, editor)) {
+    returnNodeToLastPosition(id, editor);
+  } 
 
     let x = editor.drawflow.drawflow.Home.data[id].pos_x % size;
     x = x > size / 2 ? size - x : -x;
-    editor.drawflow.drawflow.Home.data[id].pos_x += x;
-    const pos_x = editor.drawflow.drawflow.Home.data[id].pos_x;
+    let newPosition = editor.drawflow.drawflow.Home.data[id].pos_x += x;
     const width = document.getElementById(`node-${id}`).offsetWidth;
-    document.getElementById(`node-${id}`).style.left = `${pos_x + ((size - width) / 2)}px`;
+    editor.drawflow.drawflow.Home.data[id].pos_x = newPosition;
+    newPosition = newPosition + ((size - width) / 2);
+    document.getElementById(`node-${id}`).style.left = `${newPosition}px`;
   
     const data = editor.drawflow.drawflow.Home.data;
   
@@ -72,7 +95,7 @@ export const sortPosition = (id, editor) => {
       if(idx == id)
         continue;
   
-      const currentColumn = editor.drawflow.drawflow.Home.data[idx].pos_x / size;
+      const currentColumn = getNodeColumn(idx, editor );
       if(column !== currentColumn)
         continue;
   
@@ -98,8 +121,10 @@ export const sortPosition = (id, editor) => {
       }
     }
   
-    editor.drawflow.drawflow.Home.data[id].pos_y = y;
-    document.getElementById(`node-${id}`).style.top = `${y}px`;   
-  
-    editor.updateConnectionNodes(`node-${id}`);
+    moveNode(id, editor, null, y);
+
+    editor.drawflow.drawflow.Home.data[id].data.last_position = { 
+      pos_x: editor.drawflow.drawflow.Home.data[id].pos_x,
+      pos_y: editor.drawflow.drawflow.Home.data[id].pos_y
+    };
   }
