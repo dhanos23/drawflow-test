@@ -11,7 +11,6 @@ import * as Vue from "vue";
 import Drawflow from "drawflow";
 import styleDrawflow from "drawflow/dist/drawflow.min.css"; // eslint-disable-line no-use-before-define
 import NodeClickVue from "./components/NodeClick.vue";
-import Block from "./components/Block.vue";
 import UbicacionUsuario from "./components/UbicacionUsuario.vue";
 import { sortPosition, orderNode } from "./helpers/functions";
 /*eslint-enable */
@@ -30,6 +29,8 @@ export default {
     this.editor.reroute_fix_curvature = true;
 
     this.editor.start();
+    this.editor.zoom_out();
+
     const props = {
       editor: this.editor,
     };
@@ -55,7 +56,6 @@ export default {
       props,
       options
     );
-    this.editor.registerNode("Block", Block, props, options);
 
     const data = {};
 
@@ -73,9 +73,9 @@ export default {
     this.editor.addNode(
       "Name2",
       3,
+      2,
       0,
-      750,
-      300,
+      400,
       "ubicacion",
       data,
       "UbicacionUsuario",
@@ -92,9 +92,6 @@ export default {
       "UbicacionUsuario",
       "vue"
     );
-    let block = "Block";
-    this.editor.addNode(block, 3, 2, 250, 300, block, data, block, "vue");
-    this.editor.addNode(block, 3, 0, 250, 310, block, data, block, "vue");
   },
 };
 </script>
