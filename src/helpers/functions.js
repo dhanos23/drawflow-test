@@ -10,10 +10,15 @@ export const orderNode = (connection, editor) => {
   let inputNode =  editor.drawflow.drawflow.Home.data[inputId];
   let inputColumn = inputNode.pos_x / size;
 
+  if (outputColumn > inputColumn ) {
+    console.log('Forbidden connection deleted');
+    editor.removeSingleConnection(outputId, inputId, connection.output_class, connection.input_class); 
+    return;
+  }
+
   if (outputColumn != inputColumn )
     return;
 
-  // editor.removeSingleConnection(outputId, inputId, connection.output_class, connection.input_class); 
   let inputNodeWithoutConnections   = true;
   let inputOutputs = Object.values(inputNode.outputs);
 
