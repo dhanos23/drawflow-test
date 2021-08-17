@@ -1,5 +1,46 @@
 const size = 500;
 
+export const orderNode = (connection, editor) => {
+
+// {output_id: "1", input_id: "2", output_class: "output_1", input_class: "input_1"}
+
+  let outputId = connection.output_id;
+  let inputId = connection.input_id;
+  let outputColumn = editor.drawflow.drawflow.Home.data[outputId].pos_x / size;
+  let inputNode =  editor.drawflow.drawflow.Home.data[inputId];
+  let inputColumn = inputNode.pos_x / size;
+
+  if (outputColumn != inputColumn )
+    return;
+
+  // editor.removeSingleConnection(outputId, inputId, connection.output_class, connection.input_class); 
+  let inputNodeWithoutConnections   = true;
+  let inputOutputs = Object.values(inputNode.outputs);
+
+  // Find if node 2 has connections
+  inputOutputs.forEach(output => {
+    let connections = Object.values(output.connections);
+    if (connections.length > 0){
+      inputNodeWithoutConnections   = false;
+    }
+  })
+
+  if(inputNodeWithoutConnections ) {
+    console.log('Mover nodo');
+    let x = (inputColumn+1) * size;
+    editor.drawflow.drawflow.Home.data[inputId].pos_x = x;
+    let width = document.getElementById(`node-${inputId}`).offsetWidth;
+    document.getElementById(`node-${inputId}`).style.left = `${x + ((size - width) / 2)}px`; 
+
+    sortPosition(inputId, editor);
+  }
+
+  //TODO
+    //node2 con outputs
+    // col node1  < col node 1
+
+}
+
 export const sortPosition = (id, editor) => {
 
     let x = editor.drawflow.drawflow.Home.data[id].pos_x % size;
@@ -50,4 +91,5 @@ export const sortPosition = (id, editor) => {
     editor.drawflow.drawflow.Home.data[id].pos_y = y;
     document.getElementById(`node-${id}`).style.top = `${y}px`;   
   
+    editor.updateConnectionNodes(`node-${id}`);
   }
