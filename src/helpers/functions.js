@@ -173,14 +173,14 @@ export const sortPosition = (id, editor) => {
   const distY = y - last_posY;
   const distX = pos_x + (size - width) / 2 - last_posX;
  
-  animateMove({distX, distY, element: elementSelected })
+  animateMove({distX, distY, element: elementSelected, editor, id })
 
   nodeSelected.data.last_position = { 
     pos_x: last_posX,
     pos_y: last_posY
   };
 
-  editor.updateConnectionNodes(`node-${id}`);
+  
 };
 
 export const randomColor = () => {
@@ -221,7 +221,7 @@ export const colorConnectionRemoved = (connection, editor) => {
   }
 };
 
-const animateMove = ({distX = 0, distY = 0, element}) => {
+const animateMove = ({distX = 0, distY = 0, element, editor, id}) => {
   const animacion = element.animate(
     [
       { transform: `translate(0)` },
@@ -231,5 +231,6 @@ const animateMove = ({distX = 0, distY = 0, element}) => {
   );
   animacion.addEventListener("finish", function() {
     element.style.transform = `translate(${distX}px, ${distY}px)`;
+    editor.updateConnectionNodes(`node-${id}`);
   });
 }
