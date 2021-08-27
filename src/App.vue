@@ -132,9 +132,43 @@ html {
 .input {
   background: white !important;
 }
-/* .drawflow-node {
-  padding-left: 30px !important;
-  padding-right: 30px !important;
-  z-index: -999;
-} */
+
+/* eventualmente con SASS esto sera mas corto */
+.output {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+}
+.output_1::before {
+  content: "1";
+}
+.output_2::before {
+  content: "2";
+}
+.output_3::before {
+  content: "3";
+}
+.output_4::before {
+  content: "4";
+}
+
+.input {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+}
+.input_1::before {
+  content: "1";
+}
+.input_2::before {
+  content: "2";
+}
+.input_3::before {
+  content: "3";
+}
+.input_4::before {
+  content: "4";
+}
 </style>
